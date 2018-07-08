@@ -6,11 +6,11 @@ This program crawls Google images and Bing images, which unfortunately only retu
 
 Before:
 
-<img src="hotdog.jpg" width="400" height="300" />
+<img src="examples/hotdog.jpg" width="400" height="300" />
 
 Mosaic created using the keyword **hamburger**:
 
-<img src="example.gif" width="400" height="300"/>
+<img src="examples/example.gif" width="400" height="300"/>
 
 ## Todo:
 - when number of pictures gets large, will need to calculate `image_utils.py::getMostAppropriateColour` using an OctTree instead of Eucleadian distance
