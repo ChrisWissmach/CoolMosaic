@@ -10,16 +10,14 @@ def makeMosaic(im, keyword, verbose=False):
 	orig_width, orig_height = im.size
 	mosaic_images = crawlImages(keyword, verbose)
 
+	tile_size = 32
 	images_arr= []
 
 	if (verbose):
 		print "Creating image database"
 	for i in mosaic_images:
-		i2 = Image.open(i)
+		i2 = Image.open(i).resize((tile_size, tile_size))
 		images_arr.append((getAverageColour(i2), i2))
-
-	tile_size = 32
-
 
 	new_width = orig_width * tile_size
 	new_height = orig_height * tile_size
@@ -40,7 +38,7 @@ def makeMosaic(im, keyword, verbose=False):
 				if (processed % 50 == 0):
 					print "Processing"
 			best_im = getMostAppropriateImage(im.getpixel((j,i)), images_arr)
-			mosaic.paste(best_im.resize((tile_size, tile_size)), (x1, y1))
+			mosaic.paste(best_im, (x1, y1))
 			x1 = x2 + 1
 			x2 += tile_size + 1
 		y1 = y2 + 1
