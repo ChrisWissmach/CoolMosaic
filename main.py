@@ -2,7 +2,42 @@
 
 from PIL import Image
 import argparse
-from utils.image_utils import getRGBArray, getAverageColour
+from utils.image_utils import getRGBArray, getAverageColour, getMostAppropriateImage
+from utils.image_crawler import crawlImages
+
+
+def makeMosaic(im, keyword):
+	orig_width, orig_height = im.size
+	mosaic_images = crawlImages(keyword)
+
+	images_arr= []
+	for i in mosaic_images:
+		i2 = Image.open(i)
+		images_arr.append((getAverageColour(i2), i2))
+
+	tile_size = 32
+
+
+	new_width = orig_width * tile_size
+	new_height = orig_height * tile_size
+
+	x1 = x2 = 0
+	y1 = y2 = tile_size
+
+	mosaic = Image.new('RGB', (new_width, new_height), 0)
+
+	for i in range(orig_height):
+		x1 = 0
+		x2 = tile_size
+		for j in range(orig_width):
+			best_im = getMostAppropriateImage(im.getpixel((j,i)), images_arr)
+			mosaic.paste(best_im.resize((tile_size, tile_size)), (x1, y1))
+			x1 = x2 + 1
+			x2 += tile_size + 1
+		y1 = y2 + 1
+		y2 += tile_size + 1
+
+	mosaic.show()
 
 
 def main():
@@ -15,11 +50,7 @@ def main():
 	# image_path = "hotdog.jpg"
 
 	im = Image.open(args.file)
-	rgb = getAverageColour(im)
-
-	avg_colour_img = Image.new('RGB', (100,100), color=rgb)
-	avg_colour_img.show()
-
+	makeMosaic(im, args.keyword)
 
 if __name__ == "__main__":
 	main()

@@ -30,5 +30,5 @@ def crawlImages(keyword):
     return images
 
 # for testing purposes
-im = crawlImages("waterloo university")
-Image.open(im[0]).show()
+# im = crawlImages("waterloo university")
+# Image.open(im[0]).show()
