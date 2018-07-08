@@ -28,3 +28,14 @@ def getAverageColour(im):
 
 	num_pixels = width * height
 	return (avg_r / num_pixels, avg_g / num_pixels, avg_b / num_pixels)
+
+def getMostAppropriateImage(rgb, picture_map):
+	min_distance = float("inf")
+	min_image = None
+	for (colour, image) in picture_map:
+		dist = colour[0] - rgb[0])**2 + (colour[1] - rgb[1])**2 + (colour[2] - rgb[2])**2
+		if (dist < min_distance):
+			min_distance = dist
+			min_image = image
+
+	return min_image
