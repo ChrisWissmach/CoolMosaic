@@ -9,8 +9,7 @@ def getRGBArray(im):
 	for i in range(height):
 		for j in range(width):
 			# Reverse width/height for getpixel
-			rgb_arr[i][j] = im.getpixel((j,i))
-
+			rgb_arr[i][j] = im.convert('RGB').getpixel((j,i))
 	return rgb_arr
 
 def getAverageColour(im):

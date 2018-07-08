@@ -10,7 +10,6 @@ def makeMosaic(im, keyword, tile_size, group_size, verbose=False):
 	orig_width, orig_height = im.size
 	mosaic_images = crawlImages(keyword, verbose)
 
-	tile_size = 32
 	images_arr= []
 
 	if (verbose):
