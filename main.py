@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 
 from PIL import Image
-
-
-def getRGBArray(image_path):
-	im = Image.open(image_path)
-	width, height = im.size
-	rgb_arr = [[(0,0,0) for i in range(width)] for i in range(height)]
-
-	for i in range(height):
-		for j in range(width):
-			# Reverse width/height for getpixel
-			rgb_arr[i][j] = im.getpixel((j,i))
-
-	return rgb_arr
+from utils.image_utils import getRGBArray, getAverageColour
 
 
 def main():
 	image_path = raw_input("Enter the path to an image: ")
 	keyword = raw_input("Enter a keyword: ")
 
-	arr = getRGBArray(image_path)
+	# For testing :-)
+	# image_path = "hotdog.jpg"
+
+	im = Image.open(image_path)
+	rgb = getAverageColour(im)
+
+	avg_colour_img = Image.new('RGB', (100,100), color=rgb)
+	avg_colour_img.show()
+
 
 if __name__ == "__main__":
 	main()
