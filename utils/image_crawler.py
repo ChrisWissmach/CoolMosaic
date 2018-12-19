@@ -2,40 +2,42 @@ import requests
 from bs4 import BeautifulSoup as bs
 from io import BytesIO
 from PIL import Image
+from multiprocessing.dummy import Pool
 
-def crawlImages(keyword, verbose=False):
-    google_search = "https://www.google.com/search?q=" + keyword + "&source=lnms&tbm=isch&sa=X&ved=0ahUKEwilqcTb4Y7cAhUPHzQIHSTiCc8Q_AUICigB&biw=1440&bih=742"
-    bing_search = "https://www4.bing.com/images/search?q=" + keyword + "&FORM=HDRSC2"
-    images = []
+def googleSearch(args):
+    [keyword, startFrom, verbose] = args
 
-    if (verbose):
+    if verbose:
         print "Crawling Google"
+
+    image_urls = []
+
+    google_search = "https://www.google.com/search?q={}&source=lnms&tbm=isch&sa=X&ved=0ahUKEwilqcTb4Y7cAhUPHzQIHSTiCc8Q_AUICigB&biw=1440&bih=742&start={}".format(keyword, startFrom)
     response = requests.get(google_search, timeout=2)
     soup = bs(response.content, "html.parser")
-    soup = soup.find("table", attrs={"class":"images_table"})
+    images = soup.find_all('img')
+    image_urls += images
 
-    processed = 1
-
-    # google search
-    for row in soup.findAll("tr"):
-        for item in row.findAll("td"):
-            resp = requests.get(item.img.get("src"))
-            images.append(BytesIO(resp.content))
-
-            if (verbose):
-                processed += 1
-                if (processed % 5 == 0):
-                    print "Downloading images"
+    return image_urls
 
 
+def crawlImages(keyword, verbose=False):
+    images = []
     if (verbose):
-        print "Crawling Bing"
-    response = requests.get(bing_search, timeout=2)
-    soup = bs(response.content, "html.parser")
+        processed = 1
 
-    # bing search
-    for image in soup.findAll("div", attrs={"class":"cico"}):
-        resp = requests.get(image.img.get("src"))
+    pool = Pool(3)
+    imagesFetched = pool.map(googleSearch, [[keyword, x*20, verbose] for x in range(3)]) # this will search 3 google pages
+    pool.close()
+    pool.join()
+
+    normalizedImagesFetched = []
+    for i in imagesFetched:
+        normalizedImagesFetched += i
+
+    for image in normalizedImagesFetched:
+        resp = requests.get(image.get('src'))
+
         images.append(BytesIO(resp.content))
 
         if (verbose):
