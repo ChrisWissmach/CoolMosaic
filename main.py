@@ -6,7 +6,7 @@ from utils.image_utils import getRGBArray, getAverageColour, getMostAppropriateI
 from utils.image_crawler import crawlImages
 
 
-def makeMosaic(im, keyword, tile_size, group_size, verbose=False):
+def makeMosaic(im, keyword, tile_size, group_size, file_name, verbose=False):
 	orig_width, orig_height = im.size
 	mosaic_images = crawlImages(keyword, verbose)
 
@@ -43,8 +43,11 @@ def makeMosaic(im, keyword, tile_size, group_size, verbose=False):
 		y1 = y2 + 1
 		y2 += tile_size + 1
 
-	mosaic.show()
+	mosiac_file_name = file_name.split('.')[0] + '_mosaic.png'
 
+	mosaic.save(mosiac_file_name, 'PNG')
+
+	mosaic.show()
 
 def main():
 	parser = argparse.ArgumentParser()
@@ -59,7 +62,7 @@ def main():
 	# image_path = "hotdog.jpg"
 
 	im = Image.open(args.file)
-	makeMosaic(im, args.keyword, args.tile_size, args.group_size, args.verbose)
+	makeMosaic(im, args.keyword, args.tile_size, args.group_size, args.file, args.verbose)
 
 if __name__ == "__main__":
 	main()
